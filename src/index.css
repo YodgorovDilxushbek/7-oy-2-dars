@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* Butun ekran to'liq egallash uchun */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Ekran chetidan chiqishni oldini oladi */
+}
+
+/* Light/Dark modega qarab ranglar */
+body {
+  font-family: Arial, sans-serif;
+}
+
+/* Dark mode uchun ranglar */
+.bg-dark {
+  background-color: #1a202c;
+  height: 100%; /* Ekranni to'liq egallash */
+}
+
+/* Light mode uchun ranglar */
+.bg-light {
+  background-color: #f7fafc;
+  height: 100%; /* Ekranni to'liq egallash */
+}
