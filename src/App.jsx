@@ -1,13 +1,15 @@
 import './App.css';
-import { useState} from 'react';
+import { useState, useEffect } from 'react';
 
 function App() {
+  const [users, setUsers] = useState([]);
   const [task, setTask] = useState('');
   const [todo, setTodo] = useState([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [theme, setTheme] = useState("light");
-  const [addedUsers, setAddedUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
   const [counters, setCounters] = useState([0, 0, 0]);
 
   const handleTodo = (event) => {
@@ -28,14 +30,14 @@ function App() {
   const addUser = (e) => {
     e.preventDefault();
     const newUser = { id: Date.now(), name, email };
-    setAddedUsers([...addedUsers, newUser]);
+    setUsers([...users, newUser]);
     setName("");
     setEmail("");
   };
 
   const handleDeleteUser = (id) => {
     alert("Rostan ham o'chirmoqchimisiz?");
-    setAddedUsers(addedUsers.filter((user) => user.id !== id));
+    setUsers(users.filter((user) => user.id !== id));
   };
 
   const toggleTheme = () => {
@@ -54,24 +56,28 @@ function App() {
     setCounters(newCounters);
   };
 
-  const filteredUsers = addedUsers.filter(
-    (user) =>
-      user.name.toLowerCase().includes(search.toLowerCase()) ||
-      user.email.toLowerCase().includes(search.toLowerCase())
-  );
+  useEffect(() => {
+    fetch('https://jsonplaceholder.typicode.com/users')
+      .then((response) => response.json())
+      .then((data) => {
+        setUsers(data);
+        setLoading(false);
+      });
+  }, []);
 
   return (
-    <div className={`min-h-screen flex flex-col items-center p-6 ${theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-800"}`}>
+    <div className={`min-h-screen flex flex-col items-center p-6 ${theme === "dark" ? "bg-gray-800 text-white" : "bg-gray-50 text-gray-800"}`}>
       <button
         onClick={toggleTheme}
         className="mb-6 p-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full"
       >
+
         {theme === "light" ? "Dark Mode" : "Light Mode"}
       </button>
-
+<h1 className='text-red-800 mb-3'>Scroll paydo bolmayapti iltimos pasta mashqlar ham bor </h1>
       <form
         onSubmit={handleTodo}
-        className="w-full max-w-md bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md mb-8"
+        className="w-full max-w-md bg-white p-6 rounded-lg shadow-md mb-8"
       >
         <h2 className="text-2xl font-bold mb-4">Todo List</h2>
         <input
@@ -79,7 +85,7 @@ function App() {
           value={task}
           onChange={(e) => setTask(e.target.value)}
           placeholder="Vazifani kiriting..."
-          className="w-full p-2 mb-4 border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+          className="w-full p-2 mb-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <button
           type="submit"
@@ -93,7 +99,7 @@ function App() {
         {todo.map(({ task, id }) => (
           <li
             key={id}
-            className="flex justify-between items-center bg-white dark:bg-gray-700 p-4 mb-2 rounded-lg shadow-sm"
+            className="flex justify-between items-center bg-white p-4 mb-2 rounded-lg shadow-sm"
           >
             <span>{task}</span>
             <button
@@ -111,7 +117,7 @@ function App() {
         {counters.map((counter, index) => (
           <div
             key={index}
-            className="bg-white dark:bg-gray-700 p-4 mb-4 rounded-lg shadow-md flex items-center justify-between"
+            className="bg-white p-4 mb-4 rounded-lg shadow-md flex items-center justify-between"
           >
             <span>Counter {index + 1}: {counter}</span>
             <div>
@@ -136,21 +142,20 @@ function App() {
             </div>
           </div>
         ))}
-        <div className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow-md mt-4">
+        <div className="bg-white p-4 rounded-lg shadow-md mt-4">
           <h3 className="text-xl font-bold">Total Sum: {counters.reduce((sum, counter) => sum + counter, 0)}</h3>
         </div>
       </div>
 
       <div className="mt-8 w-full max-w-md">
         <h2 className="text-2xl font-bold mb-4 text-blue-600">Foydalanuvchilar</h2>
-
-        <form onSubmit={addUser} className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md">
+        <form onSubmit={addUser} className="bg-white p-6 rounded-lg shadow-md">
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Ism"
-            className="w-full p-2 mb-4 border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+            className="w-full p-2 mb-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
           <input
@@ -158,7 +163,7 @@ function App() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
-            className="w-full p-2 mb-4 border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+            className="w-full p-2 mb-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
           <button
@@ -169,23 +174,30 @@ function App() {
           </button>
         </form>
 
-
-
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Foydalanuvchini qidirish..."
+          className="w-full p-2 mb-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
         <ul className="mt-4">
-          {filteredUsers.map((user) => (
-            <li
-              key={user.id}
-              className="flex justify-between items-center bg-white dark:bg-gray-700 p-4 mb-2 rounded-lg shadow-md"
-            >
-              <span>{user.name} - {user.email}</span>
-              <button
-                onClick={() => handleDeleteUser(user.id)}
-                className="text-red-500 hover:text-red-600 font-medium"
+          {users
+            .filter((user) => user.name.toLowerCase().includes(search.toLowerCase()))
+            .map((user) => (
+              <li
+                key={user.id}
+                className="flex justify-between items-center bg-white p-4 mb-2 rounded-lg shadow-md"
               >
-                O'chirish
-              </button>
-            </li>
-          ))}
+                <span>{user.name} - {user.email}</span>
+                <button
+                  onClick={() => handleDeleteUser(user.id)}
+                  className="text-red-500 hover:text-red-600 font-medium"
+                >
+                  O'chirish
+                </button>
+              </li>
+            ))}
         </ul>
       </div>
     </div>

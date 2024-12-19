@@ -1,27 +1,36 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-/* Butun ekran to'liq egallash uchun */
 html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow: hidden; /* Ekran chetidan chiqishni oldini oladi */
-}
-
-/* Light/Dark modega qarab ranglar */
-body {
-  font-family: Arial, sans-serif;
-}
-
-/* Dark mode uchun ranglar */
-.bg-dark {
-  background-color: #1a202c;
-  height: 100%; /* Ekranni to'liq egallash */
-}
-
-/* Light mode uchun ranglar */
-.bg-light {
-  background-color: #f7fafc;
-  height: 100%; /* Ekranni to'liq egallash */
-}
+    height: 100%;
+    margin: 0;
+    overflow: hidden; 
+  }
+  
+  #root {
+    height: 100%;
+  }
+  
+  .min-h-screen {
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto; 
+  }
+  /* Scroll dizayn */
+body::-webkit-scrollbar {
+    width: 8px; /* Scroll kengligi */
+  }
+  
+  body::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Track rangi */
+  }
+  
+  body::-webkit-scrollbar-thumb {
+    background: #888; /* Scroll tugmasi rangi */
+    border-radius: 4px; /* Yumuq burchaklar */
+  }
+  
+  body::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Hover effekti */
+  }
+  
